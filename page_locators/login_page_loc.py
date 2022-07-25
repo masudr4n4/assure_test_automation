@@ -1,0 +1,5 @@
+username_field = "id@@username"
+pwd_field = "id@@password"
+sign_in = "id@@kc-login"
+settings_icon = "xpath@@//div[@id='root']//div[@id='basic-button']"
+warning_msg = "xpath@@//span[@class='kc-feedback-text']"
