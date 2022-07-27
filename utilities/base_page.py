@@ -37,6 +37,9 @@ class BasePage():
             by = (By.TAG_NAME, locator)
         return by
 
+    def open(self,url):
+        self.driver.get(url)
+        self.wait_for_page_loaded()
     def open_homepage(self):
         self.driver.get(config.get("URL", 'url'))
 

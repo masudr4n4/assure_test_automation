@@ -21,7 +21,7 @@ def before_scenario(context, scenario):
     default_browser = config.get("BROWSER", 'default_browser')
     browser = context.config.userdata.get("browser", default_browser)
     context.browser = get_driver(context, browser)
-    log.info(f"Opened {browser} browser")
+    # log.info(f"Opened {browser} browser")
 
 
 def after_scenario(context, scenario):

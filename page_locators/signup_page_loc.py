@@ -1,0 +1,13 @@
+cookie_con = "xpath@@//a[@id='hs-eu-confirmation-button']"
+f_name = "xpath@@//input[@name='firstName']"
+l_name = "xpath@@//input[@name='lastName']"
+email = "xpath@@//input[@name='email']"
+p_code = "xpath@@//input[@name='postalCode']"
+phon_dr = "xpath@@//select[@class='PhoneInputCountrySelect']"
+tel = "xpath@@//input[@type='tel']"
+dob = "xpath@@//input[@name='dateOfBirth']"
+state = "xpath@@//input[@name='state']"
+alabama = "xpath@@//li[@id='6-option-0']"
+pwd = "xpath@@//input[@name='password']"
+submit = 'xpath@@//button[@type="submit"]'
+agree = "xpath@@//button[@type='button']"
