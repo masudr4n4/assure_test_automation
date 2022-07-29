@@ -133,6 +133,25 @@ class BasePage():
             raise TimeoutException(
                 f"URL does not contain \"{url_substring}\" substring") from Exception
 
+    def wait_till_element_is_visible(self, locator, timeout=WAIT):
+        """
+        WebDriver Explicit wait till element is not visible, once visible wait will over
+        :param locator: element to be checked
+        :param timeout: timeout
+        :return:
+        """
+
+        try:
+            element = WebDriverWait(
+                self.driver,
+                timeout,
+                ignored_exceptions=NoSuchElementException).until(
+                EC.visibility_of_element_located(
+                    self.__get_by(locator)))
+            return element
+        except Exception as e:
+            raise e
+
 
 class PageLoaded:
     def __call__(self, dr):

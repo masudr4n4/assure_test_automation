@@ -9,7 +9,7 @@ class HomePage(BasePage):
 
     def go_to_homepage(self):
         self.open_homepage()
-        self.log.info("Opened Homepage")
+        self.log.info("\n\nOpened Homepage")
         self.click(hml.cookie_accept)
 
     def click_login(self):
