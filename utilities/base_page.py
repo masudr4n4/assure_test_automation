@@ -1,10 +1,13 @@
 from enum import Enum
+from retry import retry
+from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common import ElementClickInterceptedException, NoSuchElementException, TimeoutException
+from selenium.common import ElementClickInterceptedException, NoSuchElementException, TimeoutException, \
+    StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
-
+from selenium.webdriver.support.expected_conditions import staleness_of
 from utilities.general import config
 
 
@@ -35,11 +38,19 @@ class BasePage():
             by = (By.CSS_SELECTOR, locator)
         elif strategy == Strategy.TAGNAME.value:
             by = (By.TAG_NAME, locator)
+        elif strategy == Strategy.NAME.value:
+            by = (By.NAME, locator)
         return by
 
-    def open(self,url):
+    def click_backspace(self, locator, times=3):
+        ele = self.find_element(locator)
+        for i in range(times):
+            ele.send_keys(Keys.BACK_SPACE)
+
+    def open(self, url):
         self.driver.get(url)
         self.wait_for_page_loaded()
+
     def open_homepage(self):
         self.driver.get(config.get("URL", 'url'))
 
@@ -61,6 +72,7 @@ class BasePage():
         return self.driver.find_elements(
             *self.__get_by(locator_with_strategy=locator))
 
+    @retry(StaleElementReferenceException, tries=1)
     def click(self, locator):
         """
         Clicks the given element
@@ -83,6 +95,74 @@ class BasePage():
                             """, element)
         else:
             raise Exception("Could not click on locator " + element)
+
+    def move_and_click(self, locator):
+        """
+        Move and click to the given element using
+        selenium action class
+        :param locator: Element locator strategy
+        :return: element
+        """
+        self.wait_till_element_is_visible(locator)
+        element = self.find_element(locator)
+        try:
+            action = ActionChains(self.driver)
+            action.move_to_element(element).click().perform()
+        except Exception as e:
+            raise Exception(
+                "Could Not click locator {} due to {}".format(
+                    element, e))
+        return element
+
+    def hover(self, locator, wait_seconds=2):
+        """
+        Hover over the element
+        :param locator: locator
+        :param wait_seconds: time to wait
+        :return:
+        """
+        element = self.find_element(locator)
+        action_obj = ActionChains(self.driver)
+        action_obj.move_to_element(element)
+        action_obj.perform()
+        return element
+
+    def wait_till_element_is_visible(self, locator, timeout=WAIT):
+        """
+        WebDriver Explicit wait till element is not visible, once visible wait will over
+        :param locator: element to be checked
+        :param timeout: timeout
+        :return:
+        """
+
+        try:
+            element = WebDriverWait(
+                self.browser,
+                timeout,
+                ignored_exceptions=NoSuchElementException).until(
+                EC.visibility_of_element_located(
+                    self.__get_by(locator)))
+            return element
+        except Exception as e:
+            raise e
+
+    def wait_till_element_is_invisible(self, locator, timeout=WAIT):
+        try:
+            element = WebDriverWait(self.driver, timeout, poll_frequency=2). \
+                until(
+                EC.invisibility_of_element_located(self.__get_by(locator)))
+            return element
+        except Exception as e:
+            raise e
+
+    def wait_till_element_is_clickable(self, locator, timeout=WAIT):
+        try:
+            element = WebDriverWait(self.driver, timeout, poll_frequency=2).until(EC.element_to_be_clickable(
+                self.__get_by(locator)))
+            return element
+        except Exception as e:
+            raise e
+
     def send_keys(self, locator, *keys):
         """
         send keys to locator
@@ -95,6 +175,10 @@ class BasePage():
             element.send_keys(*(keys))
         except Exception as e:
             raise e
+
+    def wait_for_element_to_be_staleness(self, locator, timeout=10):
+        element = self.find_element(locator)
+        WebDriverWait(self.driver, timeout).until(staleness_of(element))
 
     def wait_for_page_loaded(self, timeout=WAIT):
         WebDriverWait(self.driver, timeout).until(PageLoaded())
@@ -172,3 +256,4 @@ class Strategy(Enum):
     ID = "id"
     CSS = "css"
     TAGNAME = "tag name"
+    NAME = "name"

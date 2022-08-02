@@ -15,3 +15,9 @@ class HomePage(BasePage):
     def click_login(self):
         self.click(hml.alread_have_an_accnt)
 
+    def go_to_profiles(self):
+        self.click(hml.setting_icon)
+        self.wait_till_element_is_present(hml.profile_sec)
+        self.click(hml.profile_sec)
+
+

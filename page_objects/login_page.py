@@ -39,6 +39,6 @@ class LoginPage(BasePage):
 
     def verify_login_page(self):
         self.wait_till_element_is_present(lpl.login_header)
-        sign_in_text = self.find_element(lpl.h1).text
+        sign_in_text = self.find_element(lpl.h1).get_attribute('value')
         assert sign_in_text == "Sign In", f"Actual text was {sign_in_text}"
 

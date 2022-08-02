@@ -80,3 +80,40 @@ class Deals(BasePage):
         self.wait_till_url_contains("view-details")
         assert self.driver.current_url
         self.log.info("Redirected to deal details view")
+
+    def open_first_deal(self):
+        self.wait_till_element_is_present(dpl.deals)
+        self.click(dpl.deals)
+        self.wait_till_url_contains("view-details")
+        deal_id = self.driver.current_url.split("/")[-1]
+        self.log.info(f"Redirect to deal details page with dealID: {deal_id}")
+
+
+    def edit_carry_percentage(self):
+        carry_per = random.randint(1, 30)
+        self.click(dpl.carry_sec)
+        self.log.info(f"Moved to Carry section")
+        sleep(4)
+        self.wait_till_element_is_present(dpl.carry_edit_btn).click()
+        # self.hover(dpl.carry_edit_btn).click()
+        self.click(dpl.flat_fee_input) # xpath here same as mngmnt flat fee input
+        self.click_backspace(dpl.flat_fee_input,4)
+        self.send_keys(dpl.flat_fee_input, carry_per)
+        self.click(dpl.mngnt_fee_save_n_cls_btn)
+        self.log.info(f"Edited carry percentage as {carry_per}")
+        self.wait_till_element_is_invisible(dpl.editor_dialog)
+
+    def edit_management_percentage(self):
+        mng_percent = random.randint(1, 7)
+        self.click(dpl.mngment_fee_sec)
+        self.log.info(f"Moved to Management section")
+        sleep(4)
+        self.wait_till_element_is_present(dpl.edit_mng_fee_btn).click()
+        # self.hover(dpl.edit_mng_fee_btn).click()
+        # self.click(dpl.edit_mng_fee_btn)
+        self.click(dpl.percentange_field)
+        self.click_backspace(dpl.mngmnt_perc_input,4)
+        self.send_keys(dpl.mngmnt_perc_input, mng_percent)
+        self.click(dpl.mngnt_fee_save_n_cls_btn)
+        self.wait_till_element_is_invisible(dpl.editor_dialog)
+        self.log.info(f"Edited management percentage as {mng_percent}")

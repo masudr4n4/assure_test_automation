@@ -25,3 +25,4 @@ def step_impl(context):
     :type context: behave.runner.Context
     """
     SignUp(context).open_deal_invitation_page()
+

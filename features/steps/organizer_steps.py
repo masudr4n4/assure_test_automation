@@ -1,6 +1,10 @@
 from behave import *
 from static.data import *
 from page_objects.deals_page import Deals
+from page_objects.home_page import HomePage
+from page_objects.organizerprofile_page import ProfileOrg
+
+
 @given("I am logged in as organizer profile")
 def step_impl(context):
     """
@@ -22,3 +26,43 @@ def step_impl(context):
     :type context: behave.runner.Context
     """
     Deals(context).click_new_deals()
+
+
+@step("I moved to profile section")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    HomePage(context).go_to_profiles()
+
+
+@step("I click for New Organizer Profile")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    ProfileOrg(context).click_create_new_org_profile()
+
+
+@step("I open deal details page")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    Deals(context).open_first_deal()
+
+
+@then('I move to "Carry" section and edit percentage')
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    Deals(context).edit_carry_percentage()
+
+
+@step('I move to "Management" section and edit percentage')
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    Deals(context).edit_management_percentage()
