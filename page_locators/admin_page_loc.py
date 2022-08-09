@@ -1,0 +1,7 @@
+username_input = "xpath@@//input[@name='username']"
+password_input = "xpath@@//input[@name='password']"
+sign_in = "xpath@@//button[@type='submit']"
+email_input = "xpath@@//div[contains(@class,'jss95')]//input[@name='email']"
+select_deal_type = "xpath@@//div[contains(@class,'jss95')]//div[@id='demo-simple-select']"
+standard_deal = "xpath@@//li[@role='option' and text()='Standard']"
+add_client = "xpath@@//div[contains(@class,'jss95')]//button[@type='submit']"

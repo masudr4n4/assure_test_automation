@@ -26,3 +26,10 @@ def step_impl(context):
     """
     SignUp(context).open_deal_invitation_page()
 
+
+@step("I fill out sign up information for creating new account and submit with invited email")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    context.email = SignUp(context).fill_out_sign_up_info(email=context.email)

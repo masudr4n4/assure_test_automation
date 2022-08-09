@@ -64,3 +64,4 @@ def step_impl(context):
     :type context: behave.runner.Context
     """
     Deals(context).verify_deal_page()
+

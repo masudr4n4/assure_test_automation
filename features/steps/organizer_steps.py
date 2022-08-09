@@ -3,7 +3,7 @@ from static.data import *
 from page_objects.deals_page import Deals
 from page_objects.home_page import HomePage
 from page_objects.organizerprofile_page import ProfileOrg
-
+from page_objects.admin_page import Admin
 
 @given("I am logged in as organizer profile")
 def step_impl(context):
@@ -44,7 +44,7 @@ def step_impl(context):
     ProfileOrg(context).click_create_new_org_profile()
 
 
-@step("I open deal details page")
+@step("I open a deal details page")
 def step_impl(context):
     """
     :type context: behave.runner.Context
@@ -66,3 +66,34 @@ def step_impl(context):
     :type context: behave.runner.Context
     """
     Deals(context).edit_management_percentage()
+
+
+@given("I am logged in as organizer profile for creating profile")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    context.execute_steps(f'''
+    Given I am on the homepage
+    And I click "Already have an account"
+    And I set up cookies for the registry pop pup
+    Then I enter my "{profile_creator_org_username}" and "{password}"
+    And I click "SIGN IN" for login
+    Then I verify I logged in successfully
+    ''')
+
+
+@given("I on the assure admin page")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    Admin(context).logged_in_admin()
+
+
+@step("I invite an organizer for standard deal type")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    context.email = Admin(context).send_invitation_for_org()

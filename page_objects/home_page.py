@@ -10,7 +10,11 @@ class HomePage(BasePage):
     def go_to_homepage(self):
         self.open_homepage()
         self.log.info("\n\nOpened Homepage")
-        self.click(hml.cookie_accept)
+        try:
+            self.click(hml.cookie_accept)
+        except:
+            pass
+        self.driver.execute_script('window.localStorage["li_ignored"] =[{"id":3312863,"time":1659427299784}]')
 
     def click_login(self):
         self.click(hml.alread_have_an_accnt)
@@ -19,5 +23,6 @@ class HomePage(BasePage):
         self.click(hml.setting_icon)
         self.wait_till_element_is_present(hml.profile_sec)
         self.click(hml.profile_sec)
+        self.log.info("Moved to profiles section")
 
 

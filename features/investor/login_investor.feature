@@ -1,6 +1,6 @@
-# Created by HP at 23-Jul-22
+@investor
 Feature: Login investor profile
-
+  @login
   Scenario Outline: Testing different scenario for investor positive login scenario
     Given I am on the homepage
     And I click "Already have an account"

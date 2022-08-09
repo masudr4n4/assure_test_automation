@@ -1,6 +1,6 @@
-# Created by HP at 23-Jul-22
+@organizer
 Feature: Login organizer profile
-
+  @login @login_org
   Scenario Outline: Testing different scenario for organizer positive login scenario
     Given I am on the homepage
     And I click "Already have an account"
@@ -14,6 +14,7 @@ Feature: Login organizer profile
     |testacc1@yopmail.com       | Testaccount1!|
     | rana@alagzoo.com          | Testaccount1!@|
 
+  @login
   Scenario Outline: Testing different scenario for organizer negative login scenario
     Given I am on the homepage
     And I click "Already have an account"

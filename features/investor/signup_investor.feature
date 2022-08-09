@@ -1,7 +1,7 @@
-# Created by HP at 26-Jul-22
+@investor
 Feature:Testing the sign up functionality
-  # Enter feature description here
 
+  @signup
   Scenario: Sign up as investor account
     Given I on a deal invitation page on sign up purpose
     And I fill out sign up information for creating new account and submit

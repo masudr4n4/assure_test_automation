@@ -7,6 +7,7 @@ from page_locators import deals_page_loc as dpl
 from utilities.general import project_path
 from static import data
 from utilities.custom_logger import customLogger as cl
+from utilities.general import get_random_email
 import logging
 
 
@@ -31,6 +32,10 @@ class Deals(BasePage):
         if deal_type == "Assure Standard":
             self.wait_till_element_is_present(dpl.assure_standard_type)
             self.click(dpl.assure_standard_type)
+            self.log.info(f"Selected {deal_type} as deal type")
+        if deal_type == "Assure Labs":
+            self.wait_till_element_is_present(dpl.assure_labs_type)
+            self.click(dpl.assure_labs_type)
             self.log.info(f"Selected {deal_type} as deal type")
 
     def click_enter_deal_details(self):
@@ -58,13 +63,20 @@ class Deals(BasePage):
     def verify_deal_creation_success(self):
         self.wait_till_element_is_present(dpl.deal_suc_alert)
         text_ = self.find_element(dpl.messge).text
-        assert self.find_element(dpl.messge).text == "Success",f"Actuall message was {text_}"
+        assert self.find_element(dpl.messge).text == "Success", f"Actuall message was {text_}"
         self.click(dpl.ok_btn)
         self.log.info("Verified deal creation success message")
 
     def upload_my_documents(self):
-        sleep(10)
-        self.send_keys(dpl.deal_logo_field,project_path.strpath+"/static/dealer_docs.png")
+        self.send_keys(dpl.deal_logo_field, project_path.strpath + "/static/dealer_docs.png")
+        sec = 0
+        while sec < 60:
+            if len(self.find_elements(dpl.downloads_doc)) == 6:
+                break
+            else:
+                sleep(1)
+                sec+=1
+
         self.wait_till_element_is_present(dpl.review_accept)
         self.click(dpl.review_accept)
         self.log.info("Uploaded deal documentation and marked as reviewed")
@@ -88,7 +100,6 @@ class Deals(BasePage):
         deal_id = self.driver.current_url.split("/")[-1]
         self.log.info(f"Redirect to deal details page with dealID: {deal_id}")
 
-
     def edit_carry_percentage(self):
         carry_per = random.randint(1, 30)
         self.click(dpl.carry_sec)
@@ -96,8 +107,8 @@ class Deals(BasePage):
         sleep(4)
         self.wait_till_element_is_present(dpl.carry_edit_btn).click()
         # self.hover(dpl.carry_edit_btn).click()
-        self.click(dpl.flat_fee_input) # xpath here same as mngmnt flat fee input
-        self.click_backspace(dpl.flat_fee_input,4)
+        self.move_and_click(dpl.flat_fee_input,3)  # xpath here same as mngmnt flat fee input
+        self.click_backspace(dpl.flat_fee_input, 4)
         self.send_keys(dpl.flat_fee_input, carry_per)
         self.click(dpl.mngnt_fee_save_n_cls_btn)
         self.log.info(f"Edited carry percentage as {carry_per}")
@@ -109,11 +120,31 @@ class Deals(BasePage):
         self.log.info(f"Moved to Management section")
         sleep(4)
         self.wait_till_element_is_present(dpl.edit_mng_fee_btn).click()
-        # self.hover(dpl.edit_mng_fee_btn).click()
-        # self.click(dpl.edit_mng_fee_btn)
-        self.click(dpl.percentange_field)
-        self.click_backspace(dpl.mngmnt_perc_input,4)
+        self.move_and_click("xpath@@//input[@name='percent']",3)
+        self.click_backspace(dpl.mngmnt_perc_input, 4)
         self.send_keys(dpl.mngmnt_perc_input, mng_percent)
         self.click(dpl.mngnt_fee_save_n_cls_btn)
         self.wait_till_element_is_invisible(dpl.editor_dialog)
         self.log.info(f"Edited management percentage as {mng_percent}")
+
+    def click_invite_investor(self):
+        self.wait_for_page_loaded()
+        self.wait_till_element_is_present(dpl.invite_p)
+        self.click(dpl.invite_p)
+        self.click(dpl.invite_investor)
+        self.log.info("Clicked invite investor from deal page")
+
+    def insert_email_and_send_invite(self):
+        mails = ''
+        for i in range(random.randint(2, 5)):
+            mails += get_random_email()+" "
+        self.wait_till_element_is_present(dpl.invite_mail_input)
+        self.send_keys(dpl.invite_mail_input, mails)
+        self.log.info("Entered mails")
+        self.click(dpl.sent_invite_btn)
+        self.log.info("Send Invite button clicked")
+        self.wait_till_element_is_invisible(dpl.sent_invite_btn)
+
+    def verify_invitation_sent_success_message(self):
+        self.wait_till_element_is_present(dpl.succes_msg)
+        self.log.info("Send invitation success message displayed")

@@ -33,3 +33,11 @@ def step_impl(context):
     :type context: behave.runner.Context
     """
     LoginPage(context).verify_user_not_logged_in()
+
+
+@then("I verify I logged in successfully as organizer and landed on welcome page")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    LoginPage(context).verify_organizer_welcome_page()

@@ -10,6 +10,7 @@ from static import data
 import random
 import string
 import logging
+import allure
 
 class SignUp(BasePage):
     log = cl(logger=logging.getLogger(__name__))
@@ -24,13 +25,15 @@ class SignUp(BasePage):
         self.wait_till_element_is_present(spl.cookie_con, 10)
         self.click(spl.cookie_con)
 
-    def fill_out_sign_up_info(self):
+    def fill_out_sign_up_info(self, email=None):
         s = ''.join(random.choice(string.ascii_lowercase) for i in range(4))
-        email = "rana" + s + "@assure.com"
+        if not email:
+            email = "rana" + s + "@assure.com"
         self.wait_till_element_is_present(spl.f_name)
         self.send_keys(spl.f_name, "Rana")
-        self.send_keys(spl.l_name, "Test"+s)
-        self.log.info(f"Entered {email},{s} as email and last name")
+        self.send_keys(spl.l_name, "Test" + s)
+        self.log.info(f"Entered {email},{s} {data.password} as email,last name and password")
+        allure.attach(attachment_type=allure.attachment_type.TEXT, name='TestGenerated data', body=f"Entered {email},{s},{data.password} as email,last name and password")
         self.send_keys(spl.email, email)
         self.send_keys(spl.p_code, "67303")
         select = Select(self.find_element(spl.phon_dr))
@@ -50,3 +53,4 @@ class SignUp(BasePage):
         self.wait_till_element_is_present(spl.agree)
         self.click(spl.agree)
         self.log.info("Accepted the sign up agreements")
+        self.wait_till_element_is_invisible(spl.agree)

@@ -12,7 +12,7 @@ from utilities.general import config
 
 
 class BasePage():
-    WAIT = 40
+    WAIT = 30
 
     def __init__(self, context):
         self.driver = context.browser
@@ -96,7 +96,7 @@ class BasePage():
         else:
             raise Exception("Could not click on locator " + element)
 
-    def move_and_click(self, locator):
+    def move_and_click(self, locator, wait=1):
         """
         Move and click to the given element using
         selenium action class
@@ -107,12 +107,22 @@ class BasePage():
         element = self.find_element(locator)
         try:
             action = ActionChains(self.driver)
-            action.move_to_element(element).click().perform()
+            action.move_to_element(element).pause(wait).click().perform()
         except Exception as e:
             raise Exception(
                 "Could Not click locator {} due to {}".format(
                     element, e))
         return element
+
+    def move_and_send_keys(self, locator, keys, wait=1):
+        elem = self.find_element(locator)
+        try:
+            action = ActionChains(self.driver)
+            action.move_to_element(elem).send_keys(keys).pause(wait).click().perform()
+        except Exception as e:
+            raise Exception(
+                "Could Not click locator {} due to {}".format(
+                    elem, e))
 
     def hover(self, locator, wait_seconds=2):
         """
@@ -137,9 +147,9 @@ class BasePage():
 
         try:
             element = WebDriverWait(
-                self.browser,
+                self.driver,
                 timeout,
-                ignored_exceptions=NoSuchElementException).until(
+                ignored_exceptions=[NoSuchElementException]).until(
                 EC.visibility_of_element_located(
                     self.__get_by(locator)))
             return element
@@ -152,6 +162,20 @@ class BasePage():
                 until(
                 EC.invisibility_of_element_located(self.__get_by(locator)))
             return element
+        except Exception as e:
+            raise e
+
+    def wait_till_all_are_present(self, locator, number, timout=WAIT):
+        def present(locator, number):
+            def found(locator, number):
+                return len(self.driver.find_elements(locator)) == number
+
+            return found
+
+        try:
+            elements = WebDriverWait(self.driver, timout).until(present(locator, number))
+            # WebDriverWait(self.driver, timout).until(EC.presence_of_all_elements_located())
+            return elements
         except Exception as e:
             raise e
 
@@ -195,7 +219,7 @@ class BasePage():
                 self.driver,
                 timeout,
                 poll_frequency=2,
-                ignored_exceptions=NoSuchElementException).until(
+                ignored_exceptions=[NoSuchElementException]).until(
                 EC.presence_of_element_located(
                     self.__get_by(locator)
                 ))
@@ -216,25 +240,6 @@ class BasePage():
         except Exception:
             raise TimeoutException(
                 f"URL does not contain \"{url_substring}\" substring") from Exception
-
-    def wait_till_element_is_visible(self, locator, timeout=WAIT):
-        """
-        WebDriver Explicit wait till element is not visible, once visible wait will over
-        :param locator: element to be checked
-        :param timeout: timeout
-        :return:
-        """
-
-        try:
-            element = WebDriverWait(
-                self.driver,
-                timeout,
-                ignored_exceptions=NoSuchElementException).until(
-                EC.visibility_of_element_located(
-                    self.__get_by(locator)))
-            return element
-        except Exception as e:
-            raise e
 
 
 class PageLoaded:

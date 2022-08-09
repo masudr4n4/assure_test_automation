@@ -1,3 +1,5 @@
-# -- RERUN: 1 failing scenarios during last test run.
-features/investor/signup_investor.feature:5
+# -- RERUN: 3 failing scenarios during last test run.
+features/investor/individual_profiles.feature:14
+features/organizer/deal_creation.feature:6
+features/organizer/profile_creations.feature:6
 
