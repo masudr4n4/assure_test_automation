@@ -1,6 +1,9 @@
 # Assure test automation
 Run Test Case
 ```behave --tags="login_org" -D headless=true  -f allure_behave.formatter:AllureFormatter -o allure-result```
+In terminal it will show output like below:
+<img width="767" alt="image" src="https://github.com/masudr4n4/assure_test_automation/assets/34313493/f9839a9b-3098-4792-87e7-be0f0f72a3b6">
+
 
 View Reports
 ```
